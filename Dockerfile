@@ -1,4 +1,4 @@
-FROM debian:bullseye@sha256:3066ef83131c678999ce82e8473e8d017345a30f5573ad3e44f62e5c9c46442b
+FROM debian:bookworm-slim@sha256:16112ae93b810eb1ec6d1db6e01835d2444c8ca99aa678e03dd104ea3ec68408
 
 RUN apt update -qq && apt upgrade --no-install-recommends -yqq \
   && apt install --no-install-recommends -yqq procps python3-pip uwsgi uwsgi-plugin-python3 python3-setuptools nginx runit \ 
@@ -11,6 +11,6 @@ COPY wsgi.runit /etc/service/wsgi/run
 
 WORKDIR /pinserver
 COPY runit_boot.sh wsgi.ini requirements.txt wsgi.py server.py lib.py pindb.py __init__.py generateserverkey.py flaskserver.py /pinserver/
-RUN pip3 install --upgrade pip wheel
-RUN pip3 install --require-hashes -r /pinserver/requirements.txt
+RUN pip3 install --upgrade pip wheel --break-system-packages
+RUN pip3 install --require-hashes -r /pinserver/requirements.txt --break-system-packages
 CMD ["/bin/bash", "-c", "chown www-data:www-data /pins; ./runit_boot.sh"]
